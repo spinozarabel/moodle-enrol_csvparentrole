@@ -24,7 +24,7 @@ define('CLI_SCRIPT', true);
 require(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');// global moodle config file.
 require_once($CFG->libdir.'/clilib.php');
 // now get cli options
-list($options, $unrecognized) = cli_get_params(array('verbose'=>false, 'help'=>false), array('v'=>'verbose', 'h'=>'help'));
+list($options, $unrecognized) = cli_get_params(array('verbose'=>false, 'help'=>false, 'simulate'=>false), array('v'=>'verbose', 'h'=>'help', 's'=>'simulate'));
 if ($unrecognized) {
 	$unrecognized = implode("\n  ", $unrecognized);
 	cli_error(get_string('cliunknowoption', 'admin', $unrecognized));
@@ -37,6 +37,7 @@ The enrol_csvparentrole plugin must be enabled and properly configured.
 Options:
 -v, --verbose         Print verbose progess information
 -h, --help            Print out this help
+-s, --simulate        simulates the synchronisation
 Example:
 \$sudo -u www-data /usr/bin/php enrol/csvparentrole/cli/sync.php
 Sample cron entry:
@@ -59,8 +60,9 @@ if(!empty($_SERVER['GATEWAY_INTERFACE'])){
 	
 	
 $verbose = !empty($options['verbose']);
+$simulate = !empty($options['simulate']);
 $enrol = enrol_get_plugin('csvparentrole');
 $result = 0;
 	
-$result = $result | $enrol->setup_enrolments($verbose);
+$result = $result | $enrol->setup_enrolments($verbose, $simulate);
 exit($result);

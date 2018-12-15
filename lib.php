@@ -1,6 +1,6 @@
 <?php  // $Id$
 /**
- * User role assignment plugin. ver 0.2
+ * User role assignment plugin. ver 0.3 added simulate option
  *
  * This plugin synchronises user roles with external CSV file.
  *
@@ -67,7 +67,7 @@ class enrol_csvparentrole_plugin extends enrol_plugin {
  * @param bool $verbose
  * @return int 0 means success, 1 db connect failure, 2 db read failure
  */
-function setup_enrolments($verbose = false, &$user=null) {
+function setup_enrolments($verbose = false, $simulate = false, &$user=null) {
     global $CFG, $DB;
 
     if ($verbose) {
@@ -220,7 +220,9 @@ function setup_enrolments($verbose = false, &$user=null) {
 			// MOODLE 2.X => role_assign($roleid, $userid, $contextid, $component = '', $itemid = 0, $timemodified = '')
 			// we are writing the component value 'enrol_csvparentrole' in the following.
 			// This means that we will be unable to unassign this role by manually or by anyother plugin other than this.
-			role_assign($roles[$row[$fremoterole]]->id, $subjectusers[$row[$fremotesubject_proper]], $context->id, 'enrol_csvparentrole', 0, '');
+			if (!$simulate) {
+				role_assign($roles[$row[$fremoterole]]->id, $subjectusers[$row[$fremotesubject_proper]], $context->id, 'enrol_csvparentrole', 0, '');
+				}
 
 			}  // end foreach,loope through all rows from remote csv
 
@@ -236,7 +238,9 @@ function setup_enrolments($verbose = false, &$user=null) {
 				mtrace("Information: [$key] unassigning $key");
 				}
                     // MOODLE 1.X => role_unassign($assignment->roleid, $assignment->userid, 0, $assignment->contextid);
-			role_unassign($assignment->roleid, $assignment->userid, $assignment->contextid, 'enrol_csvparentrole', 0);
+			if (!$simulate) {
+				role_unassign($assignment->roleid, $assignment->userid, $assignment->contextid, 'enrol_csvparentrole', 0);
+			}	
 			}
         }
 	} else {
@@ -244,8 +248,8 @@ function setup_enrolments($verbose = false, &$user=null) {
 		if ($verbose) {
 			mtrace('Warning: Couldn\'t get rows from CSV file -- no relationships to assign');
 			}
-		}
-    }
+		} // end else
+    } // end function setup_enrolments
 
 
   /**
