@@ -43,5 +43,4 @@ It could look something like this:
    tejaswini.avasarala,espirit.avasarala,parent
 </pre>';
 $string['settingscsvfile'] = 'External CSV file';
-$string['remoteenroltable'] = 'ignore';
-$string['remoteenroltable_desc'] = 'ignore';
+

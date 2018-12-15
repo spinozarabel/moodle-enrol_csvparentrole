@@ -1,14 +1,14 @@
 <?php  // $Id$
 /**
- * User role assignment plugin. ver 1.0
+ * User role assignment plugin. ver 0.2
  *
  * This plugin synchronises user roles with external CSV file.
  *
  * @package    enrol
  * @subpackage csvparentrole
+ * @copyright  Madhu Avasarala, SriToni Learning Services <info@headstart.edu.in>
  * @copyright  Penny Leach <penny@catalyst.net.nz>
  * @copyright  Maxime Pelletier <maxime.pelletier@educsa.org>
- * @copyright  Madhu Avasarala <info@headstart.edu.in>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -55,12 +55,14 @@ class enrol_csvparentrole_plugin extends enrol_plugin {
  * MAIN FUNCTION
  * The algorithm is as follows
  * The CSV file is read into an associative array. The array consists of subarrays equal to total number of lines (minus 1 for the header)
- * Each subarray consists of 3 elements keyed by the column headings.
+ * Each subarray consists of 3 elements keyed by the column headings. These headings are mapped in the config settings of plugin
  * The moodle user role assignments are read using SQL. These are only those already established by this plugin and none others.
  * We form an array of these records with key as desiredrole | parent | student and call this $existing
  * Next a unique key is formed consisting of desiredrole | parent | student for each line of the CSV file. 
  * We look to see if this key is present in Moodle already, that is in $existing. If so we ignore, if not we add this user role assignment.
  * All user role assignments in $existing (that is already in Moodle) BUT NOT in the CSV file will be unassigned, at the end.
+ * These role assignments can only be unassigned using this plugin. Manually doing this from UI is not possible because in the
+ * role_assign statement we write out the component name, 'enrol_csvparentrole'. If this were not so unassign using UI would've been possible
  * 
  * @param bool $verbose
  * @return int 0 means success, 1 db connect failure, 2 db read failure
@@ -77,8 +79,10 @@ function setup_enrolments($verbose = false, &$user=null) {
 		}
 	$file = $this->get_config('csvfilefullpath');  // get the CSV file name and location from config settings for this plugin
     
+	// read and parse this file into an associative array using the heading row as keys. The heading row itself is otherwise ignored
+	// $csv[0] correspomds to line 2 of the CSV file.
 		
-    $csv = csv_to_associative_array($file);  // read CSV file and parse into associative array. Heading row is ignored
+    $csv = csv_to_associative_array($file);
     
     // we may need a lot of memory here
     // the time limit statement below replaces the old @set_time_limit(0)
@@ -213,7 +217,9 @@ function setup_enrolments($verbose = false, &$user=null) {
 						   . " on " . $row[$fremoteobject_proper]);
 				}
 
-				// MOODLE 2.X => role_assign($roleid, $userid, $contextid, $component = '', $itemid = 0, $timemodified = '') 
+			// MOODLE 2.X => role_assign($roleid, $userid, $contextid, $component = '', $itemid = 0, $timemodified = '')
+			// we are writing the component value 'enrol_csvparentrole' in the following.
+			// This means that we will be unable to unassign this role by manually or by anyother plugin other than this.
 			role_assign($roles[$row[$fremoterole]]->id, $subjectusers[$row[$fremotesubject_proper]], $context->id, 'enrol_csvparentrole', 0, '');
 
 			}  // end foreach,loope through all rows from remote csv
@@ -221,7 +227,9 @@ function setup_enrolments($verbose = false, &$user=null) {
 	if ($verbose) {
 		mtrace("Deleting existing user role assignations in Moodle not found in CSV file");
 		}
-	// delete everything left in existing
+	// delete everything left in $existing
+	// Note that you will not get here if count($csv) =0. So you must have atleast one record other than the heading row
+	// It is advisable to always maintain one dummy record that triggers this role_unassign
 	foreach ($existing as $key => $assignment) {
 		if ($assignment->component == 'enrol_csvparentrole') {
 			if ($verbose) {
@@ -255,6 +263,8 @@ function setup_enrolments($verbose = false, &$user=null) {
 } // end of class ------------------------------------------------
 
 /**
+ * This routine is attributed to https://github.com/rap2hpoutre/csv-to-associative-array
+  *
  * The items in the 1st line (column headers) become the fields of the array
  * each line of the CSV file is parsed into a sub-array using these fields
  * The 1st index of the array is an integer pointing to these sub arrays
