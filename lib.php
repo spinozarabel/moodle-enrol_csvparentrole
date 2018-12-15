@@ -72,6 +72,9 @@ function setup_enrolments($verbose = false, $simulate = false, &$user=null) {
 
     if ($verbose) {
 		mtrace('Starting user enrolment synchronisation...');
+		if ($simulate) {
+		mtrace('Simulation only...');
+			}
 		}
 
     if ($verbose) {

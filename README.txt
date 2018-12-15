@@ -30,7 +30,10 @@ d. desired role (for example: parent, mentor) must be already exist in Moodle
 1. Download all the files in the directory {MOODLE_DIR}/enrol/csvparentrole (using git, GitHub website, or anything else)
 2. Go to http://{MOODLE_URL}/admin to complete the installation
 3. Fill all parameters using Moodle plugin administration interface (http://{MOODLE_URL}/admin/settings.php?section=enrolsettingscsvparentrole
-4. Setup a cron job to execute {MOODLE_DIR}/enrol/csvparentrole/cli/sync.php (add -v for more output, and redirect output to log file)
+
+How to synchronize:
+1. Setup a cron job to execute {MOODLE_DIR}/enrol/csvparentrole/cli/sync.php (add -v for more output, -s to simulate only and redirect output to log file)
+2.To do it on demand, go to csvparentrole/cli and execute command: php sync.php <-v for verbose) <-s for simulation only>
 
 Feel free to send me any comments/suggestions
 
