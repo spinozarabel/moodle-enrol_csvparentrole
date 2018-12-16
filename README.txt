@@ -1,4 +1,4 @@
-This plugin allows you synchronize roles (of users such as parent, mentor) from a CSV file to Moodle.
+This plugin allows you synchronize roles (relative to users such as parent, mentor) from a CSV file to Moodle.
 
 THIS PLUGIN IS IN BETA STATUS! BE CAREFULL WITH PRODUCTION ENVIRONMENT! Use at own risk!
 
@@ -6,19 +6,19 @@ Plugin has been tested on Moodle 3.4, 3.5, 3.6.
 
 Use this piece of code at your own risk :), absolutely no warranty! I am not an expert Moodle developer
 
-In the configuration, "Subject" represents for example: parent/mentor, and "Object" represents the student, desired role can be for example:
-"parent" or "mentor".
+
+In the configuration, "Subject" represents for example: parent user or mentor user, and "Object" represents the student user, desired role can be for example: parent, mentor.
 In your CSV file the 1st row must have column headings. Thsese should correspond to settings in your plugin.
-The student and parent information corresponds to unique Moodle user information about them such as username, email of user, id, etc.
+The student and parent user information correspond to unique Moodle user information such as: username, email, ID, system id, etc.
 For example, using the defaults:
-parentname,studentname,desiredrole
+parentusername,studentusername,desiredrole
 parent1username,student1username,parent
 parent2username,student2username,parent
 
-It is possible for the CSV file to be located in Google Drive. It should be published to web as CSV file (readable by anyone who has link).
-Use the full link as the file name.
+The CSV file can be located anywhere on the server provided it can be read by www-data. It is possible for the CSV file to be located in Google Drive.
+If so it should be published to web as CSV file (readable by anyone who has link). Use the full link as the file name.
 
-Note that this is a full synchronization. The reference is the CSV and Moodle follows this.
+Note that this is a full synchronization but one way. The reference is the CSV file and Moodle follows this.
 
 HOW TO INSTALL
 ==============
