@@ -37,7 +37,7 @@ How to synchronize:
 
 Feel free to send me any comments/suggestions
 
-Madhu Avasarala, SriToni Learning Services, <info@headstart.edu.in>
+Madhu Avasarala, Avasarala Learning Services, <info@headstart.edu.in>
 
 This plugin was first developed by Penny Leach <penny@catalyst.net.nz> for Moodle 1.9
 by modified by Max Pelletier to work with Moodle 2.3. Modified by https://github.com/mfuhrmeisterDM for 2.9 and Madhu Avasarala for 3.4.
